@@ -1,8 +1,13 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { getProductsPage } from "./api/axios";
+
+import ColorOfTheYear from "./components/ColorOfTheYear";
+import PageButton from "./components/PageButton";
+
 import "./App.css";
 
-interface Data {
+export interface Data {
   id: number;
   name: string;
   year: number;
@@ -11,31 +16,67 @@ interface Data {
 }
 
 function App() {
-  const [data, setData] = useState<Data[]>([]);
+  const [page, setPage] = useState<number>(1);
 
-  useEffect(() => {
-    getData();
-  }, []);
+  const {
+    isLoading,
+    isError,
+    error,
+    data: colors,
+    isFetching,
+    isPreviousData,
+  } = useQuery(["/products", page], () => getProductsPage(page), {
+    keepPreviousData: true,
+  });
 
-  const getData = async () => {
-    try {
-      const res = await axios.get("https://reqres.in/api/products");
-      console.log(res);
-      setData(res.data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  if (isLoading) return <p>Loading Colors...</p>;
+
+  if (isError) return <p>Error: {(error as Error).message}</p>;
+
+  const content = colors.data.map((color: any) => (
+    <ColorOfTheYear key={color.id} color={color} />
+  ));
+
+  const lastPage = () => setPage(colors.total_pages);
+
+  const firstPage = () => setPage(1);
+
+  const pagesArray = Array(colors.total_pages)
+    .fill(null)
+    .map((_, index) => index + 1);
+
+  const nav = (
+    <nav>
+      <button onClick={firstPage} disabled={isPreviousData || page === 1}>
+        &lt;&lt;
+      </button>
+      {/* Removed isPreviousData from PageButton to keep button focus color instead */}
+      {pagesArray.map((pg) => (
+        <PageButton key={pg} pg={pg} setPage={setPage} />
+      ))}
+      <button
+        onClick={lastPage}
+        disabled={isPreviousData || page === colors.total_pages}
+      >
+        &gt;&gt;
+      </button>
+    </nav>
+  );
 
   return (
-    <div>
-      <h1>Render data</h1>
-      <ul>
-        {data.map((user) => (
-          <li key={user.id}>{user.name}</li>
-        ))}
-      </ul>
-    </div>
+    <>
+      {isFetching && <span>Loading...</span>}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {content}
+      </div>
+      {nav}
+    </>
   );
 }
 
