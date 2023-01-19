@@ -1,6 +1,8 @@
-const ColorOfTheYear = ({ color }: any) => {
+import { Data } from "../interfaces";
+
+export const ColorOfTheYear = ({ color }: { color: Data }) => {
   return (
-    <div
+    <article
       style={{
         background: `${color.color}`,
         height: "10rem",
@@ -11,7 +13,7 @@ const ColorOfTheYear = ({ color }: any) => {
       <p>{color.id}</p>
       <p>{color.name}</p>
       <p>{color.year}</p>
-    </div>
+    </article>
   );
 };
 

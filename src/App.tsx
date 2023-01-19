@@ -1,19 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
-import { getProductsPage } from "./api/axios";
 
-import ColorOfTheYear from "./components/ColorOfTheYear";
-import PageButton from "./components/PageButton";
+import { getProductsPage } from "./api/axios";
+import { ColorOfTheYear, PageButton } from "./components";
+import { Data } from "./interfaces";
 
 import "./App.css";
-
-export interface Data {
-  id: number;
-  name: string;
-  year: number;
-  color: string;
-  pantone_value: string;
-}
 
 function App() {
   const [page, setPage] = useState<number>(1);
@@ -30,35 +22,33 @@ function App() {
   });
 
   if (isLoading) return <p>Loading Colors...</p>;
-
   if (isError) return <p>Error: {(error as Error).message}</p>;
 
-  const content = colors.data.map((color: any) => (
+  const content = colors?.data.map((color: Data) => (
     <ColorOfTheYear key={color.id} color={color} />
   ));
 
-  const lastPage = () => setPage(colors.total_pages);
+  const lastPage = () => setPage(colors?.total_pages as number);
 
   const firstPage = () => setPage(1);
 
-  const pagesArray = Array(colors.total_pages)
+  const pagesArray: number[] = Array(colors?.total_pages)
     .fill(null)
     .map((_, index) => index + 1);
 
   const nav = (
     <nav>
       <button onClick={firstPage} disabled={isPreviousData || page === 1}>
-        &lt;&lt;
+        ←
       </button>
-      {/* Removed isPreviousData from PageButton to keep button focus color instead */}
-      {pagesArray.map((pg) => (
-        <PageButton key={pg} pg={pg} setPage={setPage} />
+      {pagesArray.map((pageNum) => (
+        <PageButton key={pageNum} pageNum={pageNum} setPage={setPage} />
       ))}
       <button
         onClick={lastPage}
-        disabled={isPreviousData || page === colors.total_pages}
+        disabled={isPreviousData || page === colors?.total_pages}
       >
-        &gt;&gt;
+        →
       </button>
     </nav>
   );
