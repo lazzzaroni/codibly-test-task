@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 
 import { getProductsPage } from "./api/axios";
-import { ColorOfTheYear, PageButton } from "./components";
+import { ColorOfTheYear, PageButton, Pagination } from "./components";
 import { Data } from "./interfaces";
 
 import "./App.css";
@@ -66,6 +66,7 @@ function App() {
         {content}
       </div>
       {nav}
+      <Pagination />
     </>
   );
 }
