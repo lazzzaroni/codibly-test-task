@@ -74,7 +74,8 @@ tr {
 
 main,
 main > span {
-  height: 18rem;
+  min-height: 18rem;
+  height: 100%;
   width: inherit;
 }
 
@@ -82,6 +83,61 @@ span {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Modal styles */
+
+.modalBackground {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.05);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContainer {
+  background: #fff;
+  width: 20rem;
+  height: 24rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  color: #000;
+  position: relative;
+}
+
+.modalColorBox {
+  width: 20rem;
+  height: 20rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: end;
+}
+
+.modalColorBox h1,
+.modalColorBox h2 {
+  margin: 0.5rem 1rem;
+}
+
+.modalCloseButton {
+  position: absolute;
+  bottom: 0;
+  right: 0.25rem;
+}
+
+.modalDescription p {
+  text-align: left;
+  margin: 0.5rem 1rem;
+}
+
+.modalDescription p:nth-child(1) {
+  margin-top: 1rem;
 }
 
 @media (prefers-color-scheme: light) {
