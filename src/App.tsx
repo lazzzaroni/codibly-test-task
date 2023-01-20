@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 
 import { getProductsPage } from "./api";
-import { Pagination, Table } from "./components";
+import { Table } from "./components";
 import { Data, ProductsPage } from "./interfaces";
 
 import "./App.css";
@@ -35,7 +35,7 @@ function App() {
   const nextPage = () => setPage((prev) => prev + 1);
   const prevPage = () => setPage((prev) => prev - 1);
 
-  const nav = (
+  const paginate = (
     <nav>
       <button onClick={prevPage} disabled={isPreviousData || page === 1}>
         ←
@@ -65,24 +65,12 @@ function App() {
         />
         <button type="submit">Search</button>
       </form>
-      {/* TODO: put loading and content in a container */}
-      {isFetching ? (
-        <span>Loading...</span>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Table color={colors} />
-        </div>
-      )}
 
-      {nav}
-      <Pagination />
+      <main>
+        {isFetching ? <span>Loading...</span> : <Table color={colors} />}
+      </main>
+
+      {paginate}
     </>
   );
 }

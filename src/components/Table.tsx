@@ -2,24 +2,22 @@ import { Data, ProductsPage } from "../interfaces";
 
 export const Table = ({ color }: { color: ProductsPage }) => {
   return (
-    <div>
-      <table style={{ borderSpacing: "0" }}>
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Year</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.isArray(color.data) ? (
-            color.data.map((item) => <Item key={item.id} item={item} />)
-          ) : (
-            <Item item={color.data} />
-          )}
-        </tbody>
-      </table>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Year</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Array.isArray(color.data) ? (
+          color.data.map((item) => <Item key={item.id} item={item} />)
+        ) : (
+          <Item item={color.data} />
+        )}
+      </tbody>
+    </table>
   );
 };
 
