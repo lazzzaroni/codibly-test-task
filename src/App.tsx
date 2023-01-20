@@ -1,52 +1,57 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 
-import { getProductsPage } from "./api/axios";
-import { ColorOfTheYear, PageButton, Pagination } from "./components";
-import { Data } from "./interfaces";
+import { getProductsPage } from "./api";
+import { ColorOfTheYear, Pagination, Table } from "./components";
+import { Data, ProductsPage } from "./interfaces";
 
 import "./App.css";
 
+const PER_PAGE = 5;
+
 function App() {
   const [page, setPage] = useState<number>(1);
+  const [search, setSearch] = useState<string>("");
+  const [searchParam, setSearchParam] = useState<string>("");
 
   const {
     isLoading,
     isError,
     error,
-    data: colors,
+    data: colors = {} as ProductsPage,
     isFetching,
     isPreviousData,
-  } = useQuery(["/products", page], () => getProductsPage(page), {
-    keepPreviousData: true,
-  });
+  } = useQuery(
+    ["/products", page, searchParam],
+    () => getProductsPage(page, PER_PAGE, searchParam),
+    {
+      keepPreviousData: true,
+    }
+  );
 
   if (isLoading) return <p>Loading Colors...</p>;
   if (isError) return <p>Error: {(error as Error).message}</p>;
 
-  const content = colors?.data.map((color: Data) => (
-    <ColorOfTheYear key={color.id} color={color} />
-  ));
+  const content = Array.isArray(colors.data) ? (
+    colors.data.map((color: Data) => (
+      // TODO: table instead of article
+      <ColorOfTheYear key={color.id} color={color} />
+    ))
+  ) : (
+    <ColorOfTheYear color={colors.data} />
+  );
 
-  const lastPage = () => setPage(colors?.total_pages as number);
-
-  const firstPage = () => setPage(1);
-
-  const pagesArray: number[] = Array(colors?.total_pages)
-    .fill(null)
-    .map((_, index) => index + 1);
+  const nextPage = () => setPage((prev) => prev + 1);
+  const prevPage = () => setPage((prev) => prev - 1);
 
   const nav = (
     <nav>
-      <button onClick={firstPage} disabled={isPreviousData || page === 1}>
+      <button onClick={prevPage} disabled={isPreviousData || page === 1}>
         ←
       </button>
-      {pagesArray.map((pageNum) => (
-        <PageButton key={pageNum} pageNum={pageNum} setPage={setPage} />
-      ))}
       <button
-        onClick={lastPage}
-        disabled={isPreviousData || page === colors?.total_pages}
+        onClick={nextPage}
+        disabled={isPreviousData || page === colors.total_pages}
       >
         →
       </button>
@@ -55,16 +60,36 @@ function App() {
 
   return (
     <>
-      {isFetching && <span>Loading...</span>}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          setSearchParam(search);
         }}
       >
-        {content}
-      </div>
+        <input
+          type="number"
+          name="id"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button type="submit">Search</button>
+      </form>
+      {/* TODO: put loading and content in a container */}
+      {isFetching ? (
+        <span>Loading...</span>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {content}
+        </div>
+      )}
+
       {nav}
       <Pagination />
     </>
