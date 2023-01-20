@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 
 import { getProductsPage } from "./api";
-import { ColorOfTheYear, Pagination, Table } from "./components";
+import { Pagination, Table } from "./components";
 import { Data, ProductsPage } from "./interfaces";
 
 import "./App.css";
@@ -31,15 +31,6 @@ function App() {
 
   if (isLoading) return <p>Loading Colors...</p>;
   if (isError) return <p>Error: {(error as Error).message}</p>;
-
-  const content = Array.isArray(colors.data) ? (
-    colors.data.map((color: Data) => (
-      // TODO: table instead of article
-      <ColorOfTheYear key={color.id} color={color} />
-    ))
-  ) : (
-    <ColorOfTheYear color={colors.data} />
-  );
 
   const nextPage = () => setPage((prev) => prev + 1);
   const prevPage = () => setPage((prev) => prev - 1);
@@ -86,7 +77,7 @@ function App() {
             alignItems: "center",
           }}
         >
-          {content}
+          <Table color={colors} />
         </div>
       )}
 
