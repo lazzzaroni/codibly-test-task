@@ -17,8 +17,3 @@ export interface Data {
   color: string;
   pantone_value: string;
 }
-
-export interface PageButtonProps {
-  pageNum: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
-}
