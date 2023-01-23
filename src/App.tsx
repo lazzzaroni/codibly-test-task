@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 
 import { getProductsPage } from "./api";
 import { Table } from "./components";
-import { Data, ProductsPage } from "./interfaces";
+import { ProductsPage } from "./interfaces";
 
 import "./App.css";
 
@@ -30,7 +30,7 @@ function App() {
   );
 
   if (isLoading) return <p>Loading Colors...</p>;
-  if (isError) return <p>Error: {(error as Error).message}</p>;
+  if (isError) return <p>{(error as Error).message}</p>;
 
   const nextPage = () => setPage((prev) => prev + 1);
   const prevPage = () => setPage((prev) => prev - 1);
