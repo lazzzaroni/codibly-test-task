@@ -3,7 +3,7 @@ export interface ProductsPage {
   per_page: number;
   total: number;
   total_pages: number;
-  data: Data[];
+  data: Data[] | Data;
   support: {
     url: string;
     text: string;
@@ -16,9 +16,4 @@ export interface Data {
   year: number;
   color: string;
   pantone_value: string;
-}
-
-export interface PageButtonProps {
-  pageNum: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
 }
